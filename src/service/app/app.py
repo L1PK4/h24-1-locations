@@ -8,7 +8,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-def create_app(settings: Settings) -> FastAPI:
-    app = FastAPI(lifespan=lifespan)
+def create_app() -> FastAPI:
+    app = FastAPI(lifespan=lifespan, docs_url='/docs', redoc_url='/redoc')
 
     return app
