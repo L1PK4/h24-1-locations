@@ -10,6 +10,7 @@ class LocationView(BaseModel):
     lon: float
     type: LocationType
     name: str
+    picture_url: str | None = None
 
     @classmethod
     def from_model(cls, model: Locations) -> Self:
@@ -19,4 +20,5 @@ class LocationView(BaseModel):
             lon=model.lon,
             type=model.type,
             name=model.name,
+            picture_url=model.picture_url,
         )

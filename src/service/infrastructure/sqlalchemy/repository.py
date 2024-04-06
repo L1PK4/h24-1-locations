@@ -1,6 +1,7 @@
+from collections.abc import Sequence
 from typing import Annotated
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from service.domain.models.locations import Locations
@@ -16,7 +17,11 @@ class LocationRepository:
         await self.__session.flush()
         return location
 
-    async def get_all(self) -> list[Locations]:
+    async def delete(self, entity_id: int) -> None:
+        q = delete(Locations).where(Locations.id == entity_id)
+        await self.__session.execute(q)
+
+    async def get_all(self) -> Sequence[Locations]:
         return (await self.__session.execute(select(Locations))).scalars().all()
 
 

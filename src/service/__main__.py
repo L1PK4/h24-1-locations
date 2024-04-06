@@ -16,4 +16,4 @@ if __name__ == "__main__":
     )
     conf = Config()
     conf.bind = ["0.0.0.0:8000"]
-    asyncio.run(serve(app, conf))
+    asyncio.run(serve(app, conf))  # type: ignore

@@ -21,4 +21,4 @@ class Locations(BaseModel):
     type: Mapped[LocationType] = mapped_column("type", String(30))
     name: Mapped[str]
 
-    picture_url: Mapped[str]
+    picture_url: Mapped[str | None]

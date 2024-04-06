@@ -4,6 +4,8 @@ from pydantic import TypeAdapter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
+from service.domain.commands.locations import LocationCommand
+from service.domain.models.locations import Locations
 from service.domain.views.locations import LocationView
 from service.infrastructure.sqlalchemy.repository import (
     LocationRepository,
@@ -12,12 +14,6 @@ from service.infrastructure.sqlalchemy.repository import (
 from service.infrastructure.sqlalchemy.session_manager import get_session
 
 router = APIRouter(prefix="/api/v1")
-
-
-@router.get("/")
-async def index(session: Annotated[AsyncSession, Depends(get_session)]):
-    res = await session.execute(text("SELECT 1"))
-    return {"message": "Hello World", "result": res.fetchone()[0]}
 
 
 @router.get(
@@ -32,3 +28,32 @@ async def get_locations(
 ) -> list[LocationView]:
     result = await repository.get_all()
     return [LocationView.from_model(model) for model in result]
+
+
+@router.post(
+    "/locations",
+    status_code=200,
+    responses={200: {"description": "Location created", "model": LocationView}},
+)
+async def create_location(
+    location: LocationCommand,
+    repository: Annotated[LocationRepository, Depends(get_repository)],
+) -> LocationView:
+    result = await repository.add(
+        Locations(
+            lat=location.lat, lon=location.lon, type=location.type, name=location.name
+        )
+    )
+    return LocationView.from_model(result)
+
+
+@router.delete(
+    "/locations/{entity_id}",
+    status_code=200,
+    responses={200: {"description": "Location deleted"}},
+)
+async def delete_location(
+    entity_id: int,
+    repository: Annotated[LocationRepository, Depends(get_repository)],
+) -> None:
+    await repository.delete(entity_id)
