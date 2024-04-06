@@ -13,6 +13,8 @@ class LocationType(str, Enum):
 
 
 class Locations(BaseModel):
+    __tablename__ = "locations"
+
     lat: Mapped[float]
     lon: Mapped[float]
 

@@ -1,7 +1,10 @@
+from typing import Annotated
+from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from service.models.locations import Locations
+from service.domain.models.locations import Locations
+from service.infrastructure.sqlalchemy.session_manager import get_session
 
 
 class LocationRepository:
@@ -15,3 +18,9 @@ class LocationRepository:
 
     async def get_all(self) -> list[Locations]:
         return (await self.__session.execute(select(Locations))).mappings().all()
+
+
+async def get_repository(
+    session: Annotated[AsyncSession, Depends(get_session)]
+) -> LocationRepository:
+    return LocationRepository(session)
