@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
+from pydantic import TypeAdapter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
@@ -29,4 +30,4 @@ async def index(session: Annotated[AsyncSession, Depends(get_session)]):
 async def get_locations(
     repository: Annotated[LocationRepository, Depends(get_repository)]
 ) -> list[LocationView]:
-    return [loc.to_view(LocationView) for loc in (await repository.get_all())]
+    return TypeAdapter(list[LocationView]).validate_python(await repository.get_all())
