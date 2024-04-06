@@ -1,17 +1,13 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
-from pydantic import TypeAdapter
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import text
 
 from service.domain.commands.locations import LocationCommand
 from service.domain.models.locations import Locations
 from service.domain.views.locations import LocationView
 from service.infrastructure.sqlalchemy.repository import (
     LocationRepository,
-    get_repository,
+    get_location_repository,
 )
-from service.infrastructure.sqlalchemy.session_manager import get_session
 
 router = APIRouter(prefix="/api/v1")
 
@@ -24,7 +20,7 @@ router = APIRouter(prefix="/api/v1")
     },
 )
 async def get_locations(
-    repository: Annotated[LocationRepository, Depends(get_repository)]
+    repository: Annotated[LocationRepository, Depends(get_location_repository)]
 ) -> list[LocationView]:
     result = await repository.get_all()
     return [LocationView.from_model(model) for model in result]
@@ -37,7 +33,7 @@ async def get_locations(
 )
 async def create_location(
     location: LocationCommand,
-    repository: Annotated[LocationRepository, Depends(get_repository)],
+    repository: Annotated[LocationRepository, Depends(get_location_repository)],
 ) -> LocationView:
     result = await repository.add(
         Locations(
@@ -54,6 +50,6 @@ async def create_location(
 )
 async def delete_location(
     entity_id: int,
-    repository: Annotated[LocationRepository, Depends(get_repository)],
+    repository: Annotated[LocationRepository, Depends(get_location_repository)],
 ) -> None:
     await repository.delete(entity_id)
