@@ -14,4 +14,6 @@ if __name__ == "__main__":
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    asyncio.run(serve(app, Config()))
+    conf = Config()
+    conf._bind = "localhost:8080/"
+    asyncio.run(serve(app, conf))
