@@ -30,4 +30,5 @@ async def index(session: Annotated[AsyncSession, Depends(get_session)]):
 async def get_locations(
     repository: Annotated[LocationRepository, Depends(get_repository)]
 ) -> list[LocationView]:
-    return TypeAdapter(list[LocationView]).validate_python(await repository.get_all())
+    result = await repository.get_all()
+    return [LocationView.from_model(model) for model in result]

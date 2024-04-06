@@ -17,7 +17,7 @@ class LocationRepository:
         return location
 
     async def get_all(self) -> list[Locations]:
-        return (await self.__session.execute(select(Locations))).mappings().all()
+        return (await self.__session.execute(select(Locations))).scalars().all()
 
 
 async def get_repository(
