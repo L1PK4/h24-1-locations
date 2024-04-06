@@ -15,5 +15,5 @@ if __name__ == "__main__":
         allow_headers=["*"],
     )
     conf = Config()
-    conf.bind = ["0.0.0.0:8080"]
+    conf.bind = ["0.0.0.0:8000"]
     asyncio.run(serve(app, conf))
