@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from service.app.routes.v1 import locations
+from service.app.routes.v1 import locations, paths
 from service.app.settings import Settings, get_settings
 from service.infrastructure.sqlalchemy.session_manager import session_manager
 
@@ -18,4 +18,5 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan, docs_url="/docs", redoc_url="/redoc")
     app.include_router(locations.router)
+    app.include_router(paths.router)
     return app

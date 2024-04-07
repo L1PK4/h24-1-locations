@@ -35,11 +35,7 @@ async def create_location(
     location: LocationCommand,
     repository: Annotated[LocationRepository, Depends(get_location_repository)],
 ) -> LocationView:
-    result = await repository.add(
-        Locations(
-            lat=location.lat, lon=location.lon, type=location.type, name=location.name
-        )
-    )
+    result = await repository.add(location.to_model())
     return LocationView.from_model(result)
 
 

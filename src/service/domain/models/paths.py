@@ -1,3 +1,4 @@
+from sqlalchemy import ARRAY, Integer
 from service.domain.models.base import BaseModel
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -12,4 +13,4 @@ class Paths(BaseModel):
     price: Mapped[int]
     picture_url: Mapped[str | None]
 
-    location_ids: Mapped[list[int]]
+    location_ids: Mapped[list[int]] = mapped_column(ARRAY(Integer))

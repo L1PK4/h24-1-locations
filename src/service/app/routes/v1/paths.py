@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends
 from service.domain.commands.paths import PathCommand
 from service.domain.models.paths import Paths
 from service.domain.views.paths import PathsView
-from service.infrastructure.sqlalchemy.repository import (
+from service.infrastructure.sqlalchemy.path_repository import (
     PathRepository,
-    get_location_repository,
+    get_path_repository,
 )
 
 router = APIRouter(prefix="/api/v1")
@@ -20,10 +20,10 @@ router = APIRouter(prefix="/api/v1")
     },
 )
 async def get_paths(
-    repository: Annotated[PathRepository, Depends(get_location_repository)]
+    repository: Annotated[PathRepository, Depends(get_path_repository)]
 ) -> list[PathsView]:
     result = await repository.get_all()
-    return [PathsView.from_model(model) for model in result]
+    return list(result)
 
 
 @router.post(
@@ -33,12 +33,11 @@ async def get_paths(
 )
 async def create_path(
     path: PathCommand,
-    repository: Annotated[PathRepository, Depends(get_location_repository)],
+    repository: Annotated[PathRepository, Depends(get_path_repository)],
 ) -> PathsView:
-    result = await repository.add(
-        Paths(lat=path.lat, lon=path.lon, type=path.type, name=path.name)
-    )
-    return PathsView.from_model(result)
+    result = await repository.add(path.to_model())
+
+    return PathsView.from_model(result, [])
 
 
 @router.delete(
@@ -48,6 +47,6 @@ async def create_path(
 )
 async def delete_path(
     entity_id: int,
-    repository: Annotated[PathRepository, Depends(get_location_repository)],
+    repository: Annotated[PathRepository, Depends(get_path_repository)],
 ) -> None:
     await repository.delete(entity_id)

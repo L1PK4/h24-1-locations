@@ -13,8 +13,8 @@ class PathsView(BaseModel):
     name: str
     description: str
     price: int
-    picture_url: str | None
-    locations: list[LocationView]
+    picture_url: str | None = None
+    locations: list[LocationView] = []
 
     @classmethod
     def from_model(cls, model: Paths, locations: list[LocationView]) -> Self:
